@@ -19,12 +19,13 @@ const (
 
 func NewAuth() {
 	if os.Getenv("ENV") != "production" {
-		// Load environment variables from .env file
-		err := godotenv.Load()
-		if err != nil {
-			log.Println("No .env file found, using system environment variables.")
-		}
-	}
+        // Load environment variables from .env file
+        err := godotenv.Load()
+        if err != nil {
+            log.Println("No .env file found, using system environment variables.")
+        }
+    }
+	
 
 	googleClientId := os.Getenv("GOOGLE_CLIENT_ID")
 	googleClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
@@ -39,7 +40,7 @@ func NewAuth() {
 	gothic.Store = store
 
 	goth.UseProviders(
-		google.New(googleClientId, googleClientSecret, "https://goth-gracenoble4212-jla4fh1c.leapcell.dev/auth/google/callback"),
+		google.New(googleClientId, googleClientSecret, "http://localhost:3000"),
 	)
-
+	
 }
