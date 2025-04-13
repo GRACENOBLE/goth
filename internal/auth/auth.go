@@ -14,7 +14,7 @@ import (
 const (
 	key    = "ZOxgWqggIC56woCU4oTMc54bu8EiZbuHcrmK0bmMZ865egHd52E45eFbhUjCTLy3"
 	MaxAge = 86400 * 30
-	IsProd = false
+	IsProd = true
 )
 
 func NewAuth() {
