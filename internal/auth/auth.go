@@ -39,7 +39,7 @@ func NewAuth() {
 	gothic.Store = store
 
 	goth.UseProviders(
-		google.New(googleClientId, googleClientSecret, "https://goth-gracenoble4212-jla4fh1c.leapcell.dev:8080/auth/google/callback"),
+		google.New(googleClientId, googleClientSecret, "https://goth-gracenoble4212-jla4fh1c.leapcell.dev"),
 	)
 
 }
