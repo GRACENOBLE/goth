@@ -40,7 +40,7 @@ func NewAuth() {
 	gothic.Store = store
 
 	goth.UseProviders(
-		google.New(googleClientId, googleClientSecret, "http://localhost:3000"),
+		google.New(googleClientId, googleClientSecret, "https://goth-gracenoble4212-jla4fh1c.leapcell.dev"),
 	)
 	
 }
