@@ -73,6 +73,6 @@ func (s *Server) getAuthCallback(c *gin.Context) {
   }
 
 fmt.Printf("Authenticated user: %+v\n", user)
-c.Redirect(http.StatusFound, "http://localhost:3000")
+c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/")
 }
 
