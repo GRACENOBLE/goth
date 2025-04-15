@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -12,11 +14,19 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
+	allowedOrigins := []string{"http://localhost:3000"}
+	if os.Getenv("ENV") == "production" {
+		// Add production frontend URL
+		allowedOrigins = append(allowedOrigins, "https://goth-frontend.vercel.app")
+	}
+
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Add your frontend URL
+		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true, // Enable cookies/auth
+		ExposeHeaders:    []string{"Content-Length"},
+		MaxAge:           12 * time.Hour,
 	}))
 
 	r.GET("/", s.HelloWorldHandler)
@@ -26,7 +36,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/auth/:provider/callback", s.getAuthCallback)
 
 	r.GET("/auth/:provider", s.beginAuthHandler)
-
 
 	return r
 }
@@ -53,26 +62,24 @@ func (s *Server) beginAuthHandler(c *gin.Context) {
 	gothic.BeginAuthHandler(c.Writer, req)
 }
 
-
 func (s *Server) getAuthCallback(c *gin.Context) {
-  // 1. grab the provider from the path
-  provider := c.Param("provider")
+	// 1. grab the provider from the path
+	provider := c.Param("provider")
 
-  // 2. inject into the query so gothic can pick it up
-  req := c.Request
-  q   := req.URL.Query()
-  q.Add("provider", provider)
-  req.URL.RawQuery = q.Encode()
+	// 2. inject into the query so gothic can pick it up
+	req := c.Request
+	q := req.URL.Query()
+	q.Add("provider", provider)
+	req.URL.RawQuery = q.Encode()
 
-  // 3. complete the OAuth dance
-  user, err := gothic.CompleteUserAuth(c.Writer, req)
-  if err != nil {
-    // use Gin to write errors
-    c.String(http.StatusInternalServerError, "auth error: %v", err)
-    return
-  }
+	// 3. complete the OAuth dance
+	user, err := gothic.CompleteUserAuth(c.Writer, req)
+	if err != nil {
+		// use Gin to write errors
+		c.String(http.StatusInternalServerError, "auth error: %v", err)
+		return
+	}
 
-fmt.Printf("Authenticated user: %+v\n", user)
-c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/")
+	fmt.Printf("Authenticated user: %+v\n", user)
+	c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/")
 }
-
