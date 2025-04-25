@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -80,6 +79,6 @@ func (s *Server) getAuthCallback(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Authenticated user: %+v\n", user)
+	c.JSON(http.StatusOK, user)
 	c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/")
 }
