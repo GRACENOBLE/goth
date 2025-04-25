@@ -40,7 +40,7 @@ func NewAuth() {
 
 	gothic.Store = store
 
-	callbackURL := "https://goth-gracenoble4212-jla4fh1c.leapcell.dev/auth/google/callback"
+	callbackURL := "https://goth-theraddude7343-kctznmwp.leapcell.dev/auth/google/callback"
     log.Printf("Registering OAuth callback URL: %s", callbackURL)
 
 	goth.UseProviders(
