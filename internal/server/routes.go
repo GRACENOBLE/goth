@@ -130,14 +130,18 @@ func (s *Server) getAuthCallback(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "auth error: %v", err)
 		return
 	}
+	// Generate JWT token
 	token, err := auth.GenerateJWT(user)
 	if err != nil {
-		c.Redirect(http.StatusFound, "https://your-vercel-app.vercel.app/auth/callback?token="+token)
+		c.String(http.StatusInternalServerError, "token generation error: %v", err)
 		return
 	}
 
 	fmt.Printf("Authenticated user: %+v\n", user)
-	c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/auth/callback")
+	
+	// Redirect with token to frontend callback URL
+	redirectURL := "https://goth-frontend.vercel.app/auth/callback?token=" + token
+	c.Redirect(http.StatusFound, redirectURL)
 }
 
 func (s *Server) getCurrentUser(c *gin.Context) {
