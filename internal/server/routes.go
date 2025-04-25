@@ -23,7 +23,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "Origin"},
 		AllowCredentials: true, // Enable cookies/auth
 		ExposeHeaders:    []string{"Content-Length"},
 		MaxAge:           12 * time.Hour,
