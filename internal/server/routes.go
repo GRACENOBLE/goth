@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -35,6 +36,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/auth/:provider/callback", s.getAuthCallback)
 
 	r.GET("/auth/:provider", s.beginAuthHandler)
+
+	r.GET("/api/me", s.getCurrentUser)
+
+	r.GET("/auth/logout", s.logoutHandler)
 
 	return r
 }
@@ -79,6 +84,27 @@ func (s *Server) getAuthCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	fmt.Printf("Authenticated user: %+v\n", user)
 	c.Redirect(http.StatusFound, "https://goth-frontend.vercel.app/")
+}
+
+func (s *Server) getCurrentUser(c *gin.Context) {
+    user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
+    if err != nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authenticated"})
+        return
+    }
+    
+    c.JSON(http.StatusOK, gin.H{
+        "id": user.UserID,
+        "name": user.Name,
+        "email": user.Email,
+        "avatar": user.AvatarURL,
+        "provider": user.Provider,
+    })
+}
+
+func (s *Server) logoutHandler(c *gin.Context) {
+    gothic.Logout(c.Writer, c.Request)
+    c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }
