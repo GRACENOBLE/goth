@@ -1,6 +1,6 @@
 # Project goth
 
-One Paragraph of project description goes here
+This is my attempt to build the underlying workings of an authentication microservice for a production ready application
 
 ## Getting Started
 
